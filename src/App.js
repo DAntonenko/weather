@@ -14,7 +14,6 @@ const App = () => {
   const { latitude, longitude } = useSelector(state => state.geolocation.geolocationData);
 
   useEffect(() => {
-    console.log('useEffect');
     const fetchActualData = () => {
       dispatch(fetchReverseGeocodingData({latitude, longitude}));
       dispatch(fetchCurrentWeatherData({latitude, longitude}));
@@ -22,13 +21,13 @@ const App = () => {
       dispatch(fetchForecastWeatherData({latitude, longitude}));
     }
 
-    const updateDataAtIntervals = () => {
-      setInterval(() => {
-        dispatch(fetchCurrentWeatherData({latitude, longitude}));
-        dispatch(fetchCurrentPollutionData({latitude, longitude}));
-        dispatch(fetchForecastWeatherData({latitude, longitude}));
-      }, 900000);
-    }
+      const updateDataAtIntervals = () => {
+    setInterval(() => {
+      dispatch(fetchCurrentWeatherData({latitude, longitude}));
+      dispatch(fetchCurrentPollutionData({latitude, longitude}));
+      dispatch(fetchForecastWeatherData({latitude, longitude}));
+    }, 900000);
+  }
 
     if (latitude && longitude) {
       fetchActualData();
@@ -86,13 +85,14 @@ const App = () => {
 
   return (
     <div className='App'>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
       <div className='App-header'>
-        {name ? <h2>{name}</h2> : <h2>Current location</h2>}
+        {name ? <h2 className="text-3xl font-bold">{name}</h2> : <h2>Current location</h2>}
         {countries && country ? <h2>{countries.countries[country].emoji}</h2> : <p>Loading...</p>}
-        {local_names && countries && country ? <h2>{local_names[countries.countries[country].languages[0]]}</h2> : <p>Loading...</p>}
+        {
+          local_names && countries && country ?
+          <h2 className="text-3xl font-bold">{local_names[countries.countries[country].languages[0]]}</h2> :
+          <p>Loading...</p>
+        }
         {main ? <p>Temperature: {Math.round(main.temp)} °C</p> : <p>Loading...</p>}
         {main ? <p>Feels like: {Math.round(main.feels_like)} °C</p> : <p>Loading...</p>}
         {weather ? <p>Weather: {weather[0].main + ' (' + weather[0].description + ')'}</p> : <p>Loading...</p>}
