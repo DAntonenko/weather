@@ -19,15 +19,15 @@ const App = () => {
       dispatch(fetchCurrentWeatherData({latitude, longitude}));
       dispatch(fetchCurrentPollutionData({latitude, longitude}));
       dispatch(fetchForecastWeatherData({latitude, longitude}));
-    }
-
-      const updateDataAtIntervals = () => {
-    setInterval(() => {
-      dispatch(fetchCurrentWeatherData({latitude, longitude}));
-      dispatch(fetchCurrentPollutionData({latitude, longitude}));
-      dispatch(fetchForecastWeatherData({latitude, longitude}));
-    }, 900000);
-  }
+    };
+    
+    const updateDataAtIntervals = () => {
+      setInterval(() => {
+        dispatch(fetchCurrentWeatherData({latitude, longitude}));
+        dispatch(fetchCurrentPollutionData({latitude, longitude}));
+        dispatch(fetchForecastWeatherData({latitude, longitude}));
+      }, 900000);
+    };
 
     if (latitude && longitude) {
       fetchActualData();
