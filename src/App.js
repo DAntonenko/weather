@@ -41,6 +41,8 @@ const App = () => {
 
   const reverseGeocodingData = useSelector(state => state.reverseGeocoding.reverseGeocodingData);
   const currentWeatherData = useSelector(state => state.currentWeather.currentWeatherData);
+  const pollutionDataList = useSelector(state => state.currentPollution.currentPollutionData.list);
+  const forecastWeatherData = useSelector(state => state.forecastWeather.forecastWeatherData);
 
   const name = reverseGeocodingData ? reverseGeocodingData.name : null;
   const local_names = reverseGeocodingData ? reverseGeocodingData.local_names : null;
@@ -53,8 +55,9 @@ const App = () => {
   const wind = currentWeatherData ? currentWeatherData.wind : null;
   const windSpeedRounded = wind ? +wind.speed.toFixed(1) : null;
 
-  const pollutionDataList = useSelector(state => state.currentPollution.currentPollutionData.list);
   const pollution = pollutionDataList ? pollutionDataList[0] : null;
+
+  const forecastList = forecastWeatherData.list;
 
   const ms2kmh = ms => ms * 3.6;
 
@@ -82,6 +85,39 @@ const App = () => {
     4: 'Poor',
     5: 'Very Poor'
   };
+
+  function getDateFromDtTxt(dtTxt) {
+    return dtTxt.slice(0, 10); //The first 10 symbols of dt_txt field represents date
+  }
+
+  function sortForecastListByDate(forecastList) {
+    let currentDate = getDateFromDtTxt(forecastList[0].dt_txt);
+    const sortedByDateForecast = [];
+    let oneDateForecast = [];
+
+    forecastList.forEach((listItem) => {
+      if (getDateFromDtTxt(listItem.dt_txt) === currentDate) {
+        oneDateForecast.push(listItem);
+      } else {
+        sortedByDateForecast.push(oneDateForecast);
+        currentDate = getDateFromDtTxt(listItem.dt_txt);
+        oneDateForecast = [];
+        oneDateForecast.push(listItem);
+      };
+    });
+
+    sortedByDateForecast.push(oneDateForecast);
+    return sortedByDateForecast;
+  }
+
+  function calculateAverageTemperature(weatherDataArr) {
+    const averageTemperature = weatherDataArr.reduce((temperaturesSum, weatherData) => temperaturesSum + weatherData.main.temp, 0) / weatherDataArr.length;
+    return Math.round(averageTemperature);
+  }
+
+  // console.log('forecastList: ', forecastList);
+  console.log('sorted: ', sortForecastListByDate(forecastList)[0]);
+  console.log('averageTemperature: ', calculateAverageTemperature(sortForecastListByDate(forecastList)[0]));
 
   return (
     <div className='App'>
@@ -111,6 +147,11 @@ const App = () => {
         {pollution ? <p>PM2.5 (Fine particles matter): {pollution.components.pm2_5} μg/m3</p> : <p>Loading...</p>}
         {pollution ? <p>PM10 (Coarse particulate matter): {pollution.components.pm10} μg/m3</p> : <p>Loading...</p>}
         {pollution ? <p>NH3 (Ammonia): {pollution.components.nh3} μg/m3</p> : <p>Loading...</p>}
+        {forecastList
+          ? 
+          sortForecastListByDate(forecastList).map((dailyWeather) => <p>Average t° of {getDateFromDtTxt(dailyWeather[0].dt_txt)}: {calculateAverageTemperature(dailyWeather)} °C</p>)
+          :
+          <p>Loading...</p>}
       </div>
     </div>
   );
