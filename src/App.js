@@ -6,6 +6,7 @@ import { fetchCurrentWeatherData } from './store/currentWeatherSlice';
 import { fetchCurrentPollutionData } from './store/currentPollutionSlice';
 import { fetchForecastWeatherData } from './store/forecastWeatherSlice';
 import countries from 'countries-list';
+import Select from './components/Select';
 
 import './App.css';
 
@@ -116,43 +117,47 @@ const App = () => {
   }
 
   // console.log('forecastList: ', forecastList);
-  console.log('sorted: ', sortForecastListByDate(forecastList)[0]);
-  console.log('averageTemperature: ', calculateAverageTemperature(sortForecastListByDate(forecastList)[0]));
+  // console.log('sorted: ', sortForecastListByDate(forecastList)[0]);
+  // console.log('averageTemperature: ', calculateAverageTemperature(sortForecastListByDate(forecastList)[0]));
 
   return (
     <div className='App'>
-      <div className='App-header'>
-        {name ? <h2 className="text-3xl font-bold">{name}</h2> : <h2>Current location</h2>}
-        {countries && country ? <h2>{countries.countries[country].emoji}</h2> : <p>Loading...</p>}
-        {
-          local_names && countries && country ?
-          <h2 className="text-3xl font-bold">{local_names[countries.countries[country].languages[0]]}</h2> :
-          <p>Loading...</p>
-        }
-        {main ? <p>Temperature: {Math.round(main.temp)} °C</p> : <p>Loading...</p>}
-        {main ? <p>Feels like: {Math.round(main.feels_like)} °C</p> : <p>Loading...</p>}
-        {weather ? <p>Weather: {weather[0].main + ' (' + weather[0].description + ')'}</p> : <p>Loading...</p>}
-        {clouds ? <p>Cloudiness: {clouds.all} %</p> : <p>Loading...</p>}
-        {wind ? <p>Wind: {windSpeedRounded} m/s ({ms2kmh(windSpeedRounded).toFixed(1)} km/h)</p> : <p>Loading...</p>}
-        {wind ? <p>Beaufort wind scale: {beaufortWindScale(windSpeedRounded).number} - {beaufortWindScale(windSpeedRounded).description}</p> : <p>Loading...</p>}
-        {visibility ? <p>Visibility: {visibility} m</p> : <p>Loading...</p>}
-        {main ? <p>Humidity: {main.humidity} %</p> : <p>Loading...</p>}
-        {main ? <p>Pressure: {main.pressure} hPa</p> : <p>Loading...</p>}
-        {pollution ? <p>Air quality: {aqiDecoder[pollution.main.aqi]}</p> : <p>Loading...</p>}
-        {pollution ? <p>CO (Carbon monoxide): {pollution.components.co} μg/m3</p> : <p>Loading...</p>}
-        {pollution ? <p>NO (Nitrogen monoxide): {pollution.components.no} μg/m3</p> : <p>Loading...</p>}
-        {pollution ? <p>NO2 (Nitrogen dioxide): {pollution.components.no2} μg/m3</p> : <p>Loading...</p>}
-        {pollution ? <p>O3 (Ozone): {pollution.components.o3} μg/m3</p> : <p>Loading...</p>}
-        {pollution ? <p>SO2 (Sulphur dioxide): {pollution.components.so2} μg/m3</p> : <p>Loading...</p>}
-        {pollution ? <p>PM2.5 (Fine particles matter): {pollution.components.pm2_5} μg/m3</p> : <p>Loading...</p>}
-        {pollution ? <p>PM10 (Coarse particulate matter): {pollution.components.pm10} μg/m3</p> : <p>Loading...</p>}
-        {pollution ? <p>NH3 (Ammonia): {pollution.components.nh3} μg/m3</p> : <p>Loading...</p>}
-        {forecastList
-          ? 
-          sortForecastListByDate(forecastList).map((dailyWeather) => <p>Average t° of {getDateFromDtTxt(dailyWeather[0].dt_txt)}: {calculateAverageTemperature(dailyWeather)} °C</p>)
-          :
-          <p>Loading...</p>}
-      </div>
+      <Select
+        initialValue='Tbilisi'
+        options={['Tbilisi', 'Batumi', 'Kutaisi', 'Kobuleti', 'Tallinn', 'Narva', 'Saint-Petersburg']}
+      />
+      {name ? <h2 className="text-3xl font-bold">{name}</h2> : <h2>Current location</h2>}
+      {countries && country ? <h2>{countries.countries[country].emoji}</h2> : <p>Loading...</p>}
+      {
+        local_names && countries && country ?
+        <h2 className="text-3xl font-bold">{local_names[countries.countries[country].languages[0]]}</h2> :
+        <p>Loading...</p>
+      }
+      {main ? <p>Temperature: {Math.round(main.temp)} °C</p> : <p>Loading...</p>}
+      {main ? <p>Feels like: {Math.round(main.feels_like)} °C</p> : <p>Loading...</p>}
+      {weather ? <p>Weather: {weather[0].main + ' (' + weather[0].description + ')'}</p> : <p>Loading...</p>}
+      {clouds ? <p>Cloudiness: {clouds.all} %</p> : <p>Loading...</p>}
+      {wind ? <p>Wind: {windSpeedRounded} m/s ({ms2kmh(windSpeedRounded).toFixed(1)} km/h)</p> : <p>Loading...</p>}
+      {wind ? <p>Beaufort wind scale: {beaufortWindScale(windSpeedRounded).number} - {beaufortWindScale(windSpeedRounded).description}</p> : <p>Loading...</p>}
+      {visibility ? <p>Visibility: {visibility} m</p> : <p>Loading...</p>}
+      {main ? <p>Humidity: {main.humidity} %</p> : <p>Loading...</p>}
+      {main ? <p>Pressure: {main.pressure} hPa</p> : <p>Loading...</p>}
+      {pollution ? <p>Air quality: {aqiDecoder[pollution.main.aqi]}</p> : <p>Loading...</p>}
+      {pollution ? <p>CO (Carbon monoxide): {pollution.components.co} μg/m3</p> : <p>Loading...</p>}
+      {pollution ? <p>NO (Nitrogen monoxide): {pollution.components.no} μg/m3</p> : <p>Loading...</p>}
+      {pollution ? <p>NO2 (Nitrogen dioxide): {pollution.components.no2} μg/m3</p> : <p>Loading...</p>}
+      {pollution ? <p>O3 (Ozone): {pollution.components.o3} μg/m3</p> : <p>Loading...</p>}
+      {pollution ? <p>SO2 (Sulphur dioxide): {pollution.components.so2} μg/m3</p> : <p>Loading...</p>}
+      {pollution ? <p>PM2.5 (Fine particles matter): {pollution.components.pm2_5} μg/m3</p> : <p>Loading...</p>}
+      {pollution ? <p>PM10 (Coarse particulate matter): {pollution.components.pm10} μg/m3</p> : <p>Loading...</p>}
+      {pollution ? <p>NH3 (Ammonia): {pollution.components.nh3} μg/m3</p> : <p>Loading...</p>}
+      {forecastList
+        ? 
+        sortForecastListByDate(forecastList).map((dailyWeather, index) => {
+          return <p key={index}>Average t° of {getDateFromDtTxt(dailyWeather[0].dt_txt)}: {calculateAverageTemperature(dailyWeather)} °C</p>
+        })
+        :
+        <p>Loading...</p>}
     </div>
   );
 }
