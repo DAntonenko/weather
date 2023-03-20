@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+      "mukta": ["Mukta", "sans-serif"],
+    },
   },
   plugins: [],
 }

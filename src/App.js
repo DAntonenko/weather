@@ -7,6 +7,7 @@ import { fetchCurrentPollutionData } from './store/currentPollutionSlice';
 import { fetchForecastWeatherData } from './store/forecastWeatherSlice';
 import countries from 'countries-list';
 import Select from './components/Select';
+import WeatherForDay from './components/WeatherForDay';
 
 import './App.css';
 
@@ -121,10 +122,11 @@ const App = () => {
   // console.log('averageTemperature: ', calculateAverageTemperature(sortForecastListByDate(forecastList)[0]));
 
   return (
-    <div className='App'>
+    <div className='App p-2 flex flex-col items-center font-mukta'>
       <Select
         initialValue='Tbilisi'
-        options={['Tbilisi', 'Batumi', 'Kutaisi', 'Kobuleti', 'Tallinn', 'Narva', 'Saint-Petersburg']}
+        options={['Tbilisi', 'Batumi', 'Kutaisi', 'Kobuleti', 'Tallinn', 'Narva', 'Saint-Petersburg', 'Sosnoviy Bor']}
+        setCity={(city) => console.log('App: ', city)}
       />
       {name ? <h2 className="text-3xl font-bold">{name}</h2> : <h2>Current location</h2>}
       {countries && country ? <h2>{countries.countries[country].emoji}</h2> : <p>Loading...</p>}
@@ -133,6 +135,9 @@ const App = () => {
         <h2 className="text-3xl font-bold">{local_names[countries.countries[country].languages[0]]}</h2> :
         <p>Loading...</p>
       }
+      <WeatherForDay
+        id={0}
+      />
       {main ? <p>Temperature: {Math.round(main.temp)} °C</p> : <p>Loading...</p>}
       {main ? <p>Feels like: {Math.round(main.feels_like)} °C</p> : <p>Loading...</p>}
       {weather ? <p>Weather: {weather[0].main + ' (' + weather[0].description + ')'}</p> : <p>Loading...</p>}
@@ -157,7 +162,8 @@ const App = () => {
           return <p key={index}>Average t° of {getDateFromDtTxt(dailyWeather[0].dt_txt)}: {calculateAverageTemperature(dailyWeather)} °C</p>
         })
         :
-        <p>Loading...</p>}
+        <p>Loading...</p>
+      }
     </div>
   );
 }
