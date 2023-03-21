@@ -128,13 +128,13 @@ const App = () => {
         options={['Tbilisi', 'Batumi', 'Kutaisi', 'Kobuleti', 'Tallinn', 'Narva', 'Saint-Petersburg', 'Sosnoviy Bor']}
         setCity={(city) => console.log('App: ', city)}
       />
-      {name ? <h2 className="text-3xl font-bold">{name}</h2> : <h2>Current location</h2>}
+      {/* {name ? <h2 className="text-3xl font-bold">{name}</h2> : <h2>Current location</h2>}
       {countries && country ? <h2>{countries.countries[country].emoji}</h2> : <p>Loading...</p>}
       {
         local_names && countries && country ?
         <h2 className="text-3xl font-bold">{local_names[countries.countries[country].languages[0]]}</h2> :
         <p>Loading...</p>
-      }
+      } */}
       <WeatherForDay
         id={0}
       />

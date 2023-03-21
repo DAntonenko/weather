@@ -81,7 +81,7 @@ const Select = ({ initialValue, options, setCity }) => {
   }, [value, setCity]);
 
   return (
-    <div className='relative w-full h-10 bg-white'>
+    <div className='relative w-full h-16 bg-white'>
       <input
         className='absolute w-full h-full p-2 bg-inherit'
         id={inputId}
@@ -93,7 +93,7 @@ const Select = ({ initialValue, options, setCity }) => {
         onBlur={handleBlur}
       />
       {!isInFocus ?
-        <label className='absolute w-full h-full text-center text-4xl bg-inherit z-10 cursor-pointer' htmlFor={inputId}>{value}</label>
+        <label className='absolute w-full h-full flex justify-center items-center text-4xl bg-inherit z-10 cursor-pointer' htmlFor={inputId}>{value}</label>
         :
         <ul className='absolute mt-10 p-4\ bg-inherit'>
           {selectOptions(currentInputValue).map((option, index) => {

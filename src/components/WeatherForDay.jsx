@@ -7,6 +7,23 @@ const WeatherForDay = ({ id }) => {
     id: number.isRequired,
   };
 
+  const date = new Date();
+  const currentDate = date.getDate();
+  const currentMonth = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ][date.getMonth()];
+  
   const currentWeatherData = useSelector(state => state.currentWeather.currentWeatherData);
   const pollutionDataList = useSelector(state => state.currentPollution.currentPollutionData.list);
   const forecastWeatherData = useSelector(state => state.forecastWeather.forecastWeatherData);
@@ -54,22 +71,24 @@ const WeatherForDay = ({ id }) => {
   return (
     <section
       id={id}
-      className='w-80 px-4 py-8 border-2 border-black barder-solid rounded-md'
+      className='w-80 px-4 py-8 border-2 border-gray-300 barder-solid rounded-md'
     >
-      <h2 className='text-center text-2xl'>30th September</h2>
+      <h2 className='text-center text-2xl'>{currentDate} {currentMonth}</h2>
       <div
-        className='flex justify-center items-center gap-2 mt-4'
+        className='flex justify-center items-center gap-10 mt-8'
         tabIndex={id + 1}
       >
         {main ? <p className='text-7xl font-medium'>{Math.round(main.temp)}<span className='text-2xl align-super'>°C</span></p> : <p>Loading...</p>}
         {/* {main ? <p className='text-xl'>Feels like: {Math.round(main.feels_like)} °C</p> : <p>Loading...</p>} */}
+        <div className='bg-sky-500 rounded-md'>
         <img
           src={`https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`}
           alt={`${weather[0].main}`}
         />
+        </div>
       </div>
       <div
-        className='text-2xl text-center mt-4'
+        className='text-2xl text-center mt-8'
         tabIndex={id + 2}
       >
         {wind ? <p>{beaufortWindScale(windSpeedRounded).description}: {ms2kmh(windSpeedRounded).toFixed()} km/h</p> : <p>Loading...</p>}
@@ -88,7 +107,7 @@ const WeatherForDay = ({ id }) => {
         {main ? <p className='mt-2'>Pressure: {main.pressure} hPa</p> : <p>Loading...</p>}
       </div>
       <div
-        className='mt-2 flex gap-x-3 overflow-x-scroll overflow-y-hidden'
+        className='mt-8 flex gap-x-3 overflow-x-scroll overflow-y-hidden'
         tabIndex={id + 5}
       >
         {
@@ -96,11 +115,11 @@ const WeatherForDay = ({ id }) => {
           forecastList.slice(0, 8).map((forecastForThreeHours, index) => {
             return (
               <div
-                className='flex flex-col gap-y-1 items-center mt-8'
+                className='flex flex-col gap-y-1 items-center'
                 key={index}
               >
                 <time>{forecastForThreeHours.dt_txt.slice(11, 16)}</time>
-                <div className='w-11 h-11 flex justify-center items-center'>
+                <div className='w-11 h-11 flex justify-center items-center bg-sky-500 rounded'>
                   <img
                     src={`https://openweathermap.org/img/wn/${forecastForThreeHours.weather[0].icon}.png`}
                     alt={`${forecastForThreeHours.weather[0].main}`}
