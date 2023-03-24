@@ -16,6 +16,7 @@ import reverseGeocodingReducer from './reverseGeocodingSlice';
 import currentWeatherReducer from './currentWeatherSlice';
 import currentPollutionReducer from './currentPollutionSlice';
 import forecastWeatherReducer from './forecastWeatherSlice';
+import forecastPollutionReducer from './forecastPollutionSlice';
 
 const rootReducer = combineReducers({
   geolocation: geolocationReducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   currentWeather: currentWeatherReducer,
   currentPollution: currentPollutionReducer,
   forecastWeather: forecastWeatherReducer,
+  forecastPollution: forecastPollutionReducer,
 });
 
 const persistConfig = {

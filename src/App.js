@@ -5,6 +5,8 @@ import { fetchReverseGeocodingData } from './store/reverseGeocodingSlice';
 import { fetchCurrentWeatherData } from './store/currentWeatherSlice';
 import { fetchCurrentPollutionData } from './store/currentPollutionSlice';
 import { fetchForecastWeatherData } from './store/forecastWeatherSlice';
+import { fetchForecastPollutionData } from './store/forecastPollutionSlice';
+
 import countries from 'countries-list';
 import Select from './components/Select';
 import WeatherForDay from './components/WeatherForDay';
@@ -13,6 +15,9 @@ import './App.css';
 
 const App = () => {
   const dispatch = useDispatch();
+
+  const date = new Date();
+
   const { latitude, longitude } = useSelector(state => state.geolocation.geolocationData);
 
   useEffect(() => {
@@ -21,6 +26,7 @@ const App = () => {
       dispatch(fetchCurrentWeatherData({latitude, longitude}));
       dispatch(fetchCurrentPollutionData({latitude, longitude}));
       dispatch(fetchForecastWeatherData({latitude, longitude}));
+      dispatch(fetchForecastPollutionData({latitude, longitude}));
     };
     
     const updateDataAtIntervals = () => {
@@ -122,7 +128,7 @@ const App = () => {
   // console.log('averageTemperature: ', calculateAverageTemperature(sortForecastListByDate(forecastList)[0]));
 
   return (
-    <div className='App p-2 flex flex-col items-center font-mukta'>
+    <div className='App w-screen overflow-hidden p-2 flex flex-col items-center font-mukta'>
       <Select
         initialValue='Tbilisi'
         options={['Tbilisi', 'Batumi', 'Kutaisi', 'Kobuleti', 'Tallinn', 'Narva', 'Saint-Petersburg', 'Sosnoviy Bor']}
@@ -136,8 +142,44 @@ const App = () => {
         <p>Loading...</p>
       } */}
       <WeatherForDay
+        date={date}
         id={0}
+        size='medium'
+        type='general'
       />
+
+      <section className='mt-8 w-full flex gap-x-1 overflow-x-scroll'>
+        <WeatherForDay
+          date={date}
+          id={0}
+          size='small'
+          type='general'
+        />
+        <WeatherForDay
+          date={date}
+          id={0}
+          size='small'
+          type='general'
+        />
+        <WeatherForDay
+          date={date}
+          id={0}
+          size='small'
+          type='general'
+        />
+        <WeatherForDay
+          date={date}
+          id={0}
+          size='small'
+          type='general'
+        />
+        <WeatherForDay
+          date={date}
+          id={0}
+          size='small'
+          type='general'
+        />
+      </section>
       {main ? <p>Temperature: {Math.round(main.temp)} °C</p> : <p>Loading...</p>}
       {main ? <p>Feels like: {Math.round(main.feels_like)} °C</p> : <p>Loading...</p>}
       {weather ? <p>Weather: {weather[0].main + ' (' + weather[0].description + ')'}</p> : <p>Loading...</p>}
