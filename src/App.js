@@ -47,81 +47,81 @@ const App = () => {
     }
   }, [dispatch, latitude, longitude]);
 
-  const reverseGeocodingData = useSelector(state => state.reverseGeocoding.reverseGeocodingData);
-  const currentWeatherData = useSelector(state => state.currentWeather.currentWeatherData);
-  const pollutionDataList = useSelector(state => state.currentPollution.currentPollutionData.list);
-  const forecastWeatherData = useSelector(state => state.forecastWeather.forecastWeatherData);
+  // const reverseGeocodingData = useSelector(state => state.reverseGeocoding.reverseGeocodingData);
+  // const currentWeatherData = useSelector(state => state.currentWeather.currentWeatherData);
+  // const pollutionDataList = useSelector(state => state.currentPollution.currentPollutionData.list);
+  // const forecastWeatherData = useSelector(state => state.forecastWeather.forecastWeatherData);
 
-  const name = reverseGeocodingData ? reverseGeocodingData.name : null;
-  const local_names = reverseGeocodingData ? reverseGeocodingData.local_names : null;
-  const country = reverseGeocodingData ? reverseGeocodingData.country : null;
+  // const name = reverseGeocodingData ? reverseGeocodingData.name : null;
+  // const local_names = reverseGeocodingData ? reverseGeocodingData.local_names : null;
+  // const country = reverseGeocodingData ? reverseGeocodingData.country : null;
 
-  const clouds = currentWeatherData ? currentWeatherData.clouds : null;
-  const main = currentWeatherData ? currentWeatherData.main : null;
-  const visibility = currentWeatherData ? currentWeatherData.visibility : null;
-  const weather = currentWeatherData ? currentWeatherData.weather : null;
-  const wind = currentWeatherData ? currentWeatherData.wind : null;
-  const windSpeedRounded = wind ? +wind.speed.toFixed(1) : null;
+  // const clouds = currentWeatherData ? currentWeatherData.clouds : null;
+  // const main = currentWeatherData ? currentWeatherData.main : null;
+  // const visibility = currentWeatherData ? currentWeatherData.visibility : null;
+  // const weather = currentWeatherData ? currentWeatherData.weather : null;
+  // const wind = currentWeatherData ? currentWeatherData.wind : null;
+  // const windSpeedRounded = wind ? +wind.speed.toFixed(1) : null;
 
-  const pollution = pollutionDataList ? pollutionDataList[0] : null;
+  // const pollution = pollutionDataList ? pollutionDataList[0] : null;
 
-  const forecastList = forecastWeatherData.list;
+  // const forecastList = forecastWeatherData.list;
 
-  const ms2kmh = ms => ms * 3.6;
+  // const ms2kmh = ms => ms * 3.6;
 
-  const beaufortWindScale = windSpeed => {
-    if (windSpeed < 0.5) return {number: 0, description: 'Calm'};
-    else if (windSpeed >= 0.5 && windSpeed <= 1.5) return {number: 1, description: 'Light air'};
-    else if (windSpeed >= 1.6 && windSpeed <= 3.3) return {number: 2, description: 'Light breeze'};
-    else if (windSpeed >= 3.4 && windSpeed <= 5.4) return {number: 3, description: 'Gentle breeze'};
-    else if (windSpeed >= 5.5 && windSpeed <= 7.9) return {number: 4, description: 'Moderate breeze'};
-    else if (windSpeed >= 8 && windSpeed <= 10.7) return {number: 5, description: 'Fresh breeze'};
-    else if (windSpeed >= 10.8 && windSpeed <= 13.8) return {number: 6, description: 'Strong breeze'};
-    else if (windSpeed >= 13.9 && windSpeed <= 17.1) return {number: 7, description: 'Near gale'};
-    else if (windSpeed >= 17.2 && windSpeed <= 20.7) return {number: 8, description: 'Gale'};
-    else if (windSpeed >= 20.8 && windSpeed <= 24.4) return {number: 9, description: 'Strong gale'};
-    else if (windSpeed >= 24.5 && windSpeed <= 28.4) return {number: 10, description: 'Storm'};
-    else if (windSpeed >= 28.5 && windSpeed <= 32.6) return {number: 11, description: 'Violent storm'};
-    else if (windSpeed >= 32.7) return {number: 12, description: 'Hurricane'};
-    else return {number: '?', description: 'Unknown'};
-  }
+  // const beaufortWindScale = windSpeed => {
+  //   if (windSpeed < 0.5) return {number: 0, description: 'Calm'};
+  //   else if (windSpeed >= 0.5 && windSpeed <= 1.5) return {number: 1, description: 'Light air'};
+  //   else if (windSpeed >= 1.6 && windSpeed <= 3.3) return {number: 2, description: 'Light breeze'};
+  //   else if (windSpeed >= 3.4 && windSpeed <= 5.4) return {number: 3, description: 'Gentle breeze'};
+  //   else if (windSpeed >= 5.5 && windSpeed <= 7.9) return {number: 4, description: 'Moderate breeze'};
+  //   else if (windSpeed >= 8 && windSpeed <= 10.7) return {number: 5, description: 'Fresh breeze'};
+  //   else if (windSpeed >= 10.8 && windSpeed <= 13.8) return {number: 6, description: 'Strong breeze'};
+  //   else if (windSpeed >= 13.9 && windSpeed <= 17.1) return {number: 7, description: 'Near gale'};
+  //   else if (windSpeed >= 17.2 && windSpeed <= 20.7) return {number: 8, description: 'Gale'};
+  //   else if (windSpeed >= 20.8 && windSpeed <= 24.4) return {number: 9, description: 'Strong gale'};
+  //   else if (windSpeed >= 24.5 && windSpeed <= 28.4) return {number: 10, description: 'Storm'};
+  //   else if (windSpeed >= 28.5 && windSpeed <= 32.6) return {number: 11, description: 'Violent storm'};
+  //   else if (windSpeed >= 32.7) return {number: 12, description: 'Hurricane'};
+  //   else return {number: '?', description: 'Unknown'};
+  // }
 
-  const aqiDecoder = {
-    1: 'Good',
-    2: 'Fair',
-    3: 'Moderate',
-    4: 'Poor',
-    5: 'Very Poor'
-  };
+  // const aqiDecoder = {
+  //   1: 'Good',
+  //   2: 'Fair',
+  //   3: 'Moderate',
+  //   4: 'Poor',
+  //   5: 'Very Poor'
+  // };
 
-  function getDateFromDtTxt(dtTxt) {
-    return dtTxt.slice(0, 10); //The first 10 symbols of dt_txt field represents date
-  }
+  // function getDateFromDtTxt(dtTxt) {
+  //   return dtTxt.slice(0, 10); //The first 10 symbols of dt_txt field represents date
+  // }
 
-  function sortForecastListByDate(forecastList) {
-    let currentDate = getDateFromDtTxt(forecastList[0].dt_txt);
-    const sortedByDateForecast = [];
-    let oneDateForecast = [];
+  // function sortForecastListByDate(forecastList) {
+  //   let currentDate = getDateFromDtTxt(forecastList[0].dt_txt);
+  //   const sortedByDateForecast = [];
+  //   let oneDateForecast = [];
 
-    forecastList.forEach((listItem) => {
-      if (getDateFromDtTxt(listItem.dt_txt) === currentDate) {
-        oneDateForecast.push(listItem);
-      } else {
-        sortedByDateForecast.push(oneDateForecast);
-        currentDate = getDateFromDtTxt(listItem.dt_txt);
-        oneDateForecast = [];
-        oneDateForecast.push(listItem);
-      };
-    });
+  //   forecastList.forEach((listItem) => {
+  //     if (getDateFromDtTxt(listItem.dt_txt) === currentDate) {
+  //       oneDateForecast.push(listItem);
+  //     } else {
+  //       sortedByDateForecast.push(oneDateForecast);
+  //       currentDate = getDateFromDtTxt(listItem.dt_txt);
+  //       oneDateForecast = [];
+  //       oneDateForecast.push(listItem);
+  //     };
+  //   });
 
-    sortedByDateForecast.push(oneDateForecast);
-    return sortedByDateForecast;
-  }
+  //   sortedByDateForecast.push(oneDateForecast);
+  //   return sortedByDateForecast;
+  // }
 
-  function calculateAverageTemperature(weatherDataArr) {
-    const averageTemperature = weatherDataArr.reduce((temperaturesSum, weatherData) => temperaturesSum + weatherData.main.temp, 0) / weatherDataArr.length;
-    return Math.round(averageTemperature);
-  }
+  // function calculateAverageTemperature(weatherDataArr) {
+  //   const averageTemperature = weatherDataArr.reduce((temperaturesSum, weatherData) => temperaturesSum + weatherData.main.temp, 0) / weatherDataArr.length;
+  //   return Math.round(averageTemperature);
+  // }
 
   const fiveDaysForecast = [1, 2, 3, 4, 5].map((numberOfDays, index) => {
     return (

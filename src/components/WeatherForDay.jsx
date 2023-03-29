@@ -127,12 +127,30 @@ const WeatherForDay = ({ date, id, size, type }) => {
     } else { // the date is not today
 
       if (Object.keys(forecastWeatherData).length !== 0) { // check if forecastWeatherData is not empty object
-        // Select forecast data according the date received from prop
+        // Filter forecast data according the date received from prop
         const weatherOfTheDay = forecastWeatherData.list.filter(forecastForThreeHours => new Date(forecastForThreeHours.dt_txt).getDate() === date.getDate());
+
+        // Filter daytime forecast data only from weatherOfTheDay
+        const daytimeWeather = weatherOfTheDay.filter(forecastForThreeHours => 
+          +forecastForThreeHours.dt_txt.slice(11, 13) >= 9 && +forecastForThreeHours.dt_txt.slice(11, 13) <= 21);
+        console.log('daytimeWeather: ', daytimeWeather);
+
+        // Filter nighttime forecast data only from weatherOfTheDay
+        const nighttimeWeather = weatherOfTheDay.filter(forecastForThreeHours => 
+          +forecastForThreeHours.dt_txt.slice(11, 13) < 9);
+        console.log('nighttimeWeather: ', nighttimeWeather);
 
         // Calculate average daily temperature
         const dailyTemperatures = weatherOfTheDay.map(forecastForThreeHours => forecastForThreeHours.main.temp);
         data.temperature = Math.round(calculateAverage(dailyTemperatures));
+
+        // Calculate average daytime temperature
+        const daytimeTemperatures = daytimeWeather.map(forecastForThreeHours => forecastForThreeHours.main.temp);
+        data.averageDaytimeTemperature = Math.round(calculateAverage(daytimeTemperatures));
+
+        // Calculate average nighttime temperature
+        const nighttimeTemperatures = nighttimeWeather.map(forecastForThreeHours => forecastForThreeHours.main.temp);
+        data.averageNighttimeTemperature = Math.round(calculateAverage(nighttimeTemperatures));
 
         // Select icon of the most frequent weather for the day
         const dailyWeatherIcons = weatherOfTheDay.map(forecastForThreeHours => forecastForThreeHours.weather[0].icon);
@@ -242,9 +260,15 @@ const WeatherForDay = ({ date, id, size, type }) => {
           :
           <p>n.d.</p>
         }
-        {data.temperature ?
-          <p className='text-4xl font-medium'>{data.temperature}<span className='text-sm align-super'>°C</span></p> : <p>n.d.</p>
+        {data.averageDaytimeTemperature ?
+          <p className='text-4xl font-medium'>{data.averageDaytimeTemperature}<span className='text-sm align-super'>°C</span></p> : <p>n.d.</p>
         }
+        <div>
+          
+          {data.averageNighttimeTemperature ?
+            <p className='text-xl font-medium text-gray-500'>{data.averageNighttimeTemperature}<span className=' text-xs align-super'>°C</span></p> : <p>n.d.</p>
+          }
+        </div>
       </section>
     );
   };
