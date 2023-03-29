@@ -123,9 +123,17 @@ const App = () => {
     return Math.round(averageTemperature);
   }
 
-  // console.log('forecastList: ', forecastList);
-  // console.log('sorted: ', sortForecastListByDate(forecastList)[0]);
-  // console.log('averageTemperature: ', calculateAverageTemperature(sortForecastListByDate(forecastList)[0]));
+  const fiveDaysForecast = [1, 2, 3, 4, 5].map((numberOfDays, index) => {
+    return (
+      <WeatherForDay
+        date={new Date(date.getTime() + (86400000) * numberOfDays)} // add days to current date; 86400000 is number of milliseconds in a day
+        id={numberOfDays + 1}
+        size='small'
+        type='general'
+        key={index}
+      />
+    )
+  });
 
   return (
     <div className='App w-screen overflow-hidden p-2 flex flex-col items-center font-mukta'>
@@ -143,44 +151,15 @@ const App = () => {
       } */}
       <WeatherForDay
         date={date}
-        id={0}
+        id={1}
         size='medium'
         type='general'
       />
 
       <section className='mt-8 w-full flex gap-x-1 overflow-x-scroll'>
-        <WeatherForDay
-          date={date}
-          id={0}
-          size='small'
-          type='general'
-        />
-        <WeatherForDay
-          date={date}
-          id={0}
-          size='small'
-          type='general'
-        />
-        <WeatherForDay
-          date={date}
-          id={0}
-          size='small'
-          type='general'
-        />
-        <WeatherForDay
-          date={date}
-          id={0}
-          size='small'
-          type='general'
-        />
-        <WeatherForDay
-          date={date}
-          id={0}
-          size='small'
-          type='general'
-        />
+        {fiveDaysForecast}
       </section>
-      {main ? <p>Temperature: {Math.round(main.temp)} °C</p> : <p>Loading...</p>}
+      {/* {main ? <p>Temperature: {Math.round(main.temp)} °C</p> : <p>Loading...</p>}
       {main ? <p>Feels like: {Math.round(main.feels_like)} °C</p> : <p>Loading...</p>}
       {weather ? <p>Weather: {weather[0].main + ' (' + weather[0].description + ')'}</p> : <p>Loading...</p>}
       {clouds ? <p>Cloudiness: {clouds.all} %</p> : <p>Loading...</p>}
@@ -205,7 +184,7 @@ const App = () => {
         })
         :
         <p>Loading...</p>
-      }
+      } */}
     </div>
   );
 }

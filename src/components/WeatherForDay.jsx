@@ -10,9 +10,8 @@ const WeatherForDay = ({ date, id, size, type }) => {
     type: PropTypes.oneOf(['general', 'main', 'wind', 'air_quality', 'day_forecast']).isRequired,
   };
 
-  const today = new Date();
-  const currentDate = date.getDate();
-  const currentMonth = [
+  const day = date.getDate();
+  const month = [
     'January',
     'February',
     'March',
@@ -27,24 +26,14 @@ const WeatherForDay = ({ date, id, size, type }) => {
     'December'
   ][date.getMonth()];
 
-  function getDateFromDtTxt(dtTxt) {
-    return dtTxt.slice(0, 10); //The first 10 symbols of dt_txt field represents date
-  }
-
-  function getDataSource(date) {
-
-  }
+  // function getDateFromDtTxt(dtTxt) {
+  //   return dtTxt.slice(0, 10); //The first 10 symbols of dt_txt field represents date
+  // }
   
   const currentWeatherData = useSelector(state => state.currentWeather.currentWeatherData);
-  const pollutionDataList = useSelector(state => state.currentPollution.currentPollutionData.list);
+  const currentPollutionData = useSelector(state => state.currentPollution.currentPollutionData);
   const forecastWeatherData = useSelector(state => state.forecastWeather.forecastWeatherData);
-  
-  const main = currentWeatherData ? currentWeatherData.main : null;
-  const weather = currentWeatherData ? currentWeatherData.weather : null;
-  const wind = currentWeatherData ? currentWeatherData.wind : null;
-  const windSpeedRounded = wind ? +wind.speed.toFixed(1) : null;
-  const pollution = pollutionDataList ? pollutionDataList[0] : null;
-  const forecastList = forecastWeatherData.list;
+  const forecastPollutionData = useSelector(state => state.forecastPollution.forecastPollutionData);
 
   const ms2kmh = ms => ms * 3.6;
 
@@ -73,24 +62,111 @@ const WeatherForDay = ({ date, id, size, type }) => {
     5: 'Very Poor'
   };
 
+  const data = {};
+
+  function calculateAverage(arr) {
+    return (arr.reduce((sum, current) => sum + current, 0)) / arr.length;
+  }
+
+  function sortValuesByFrequency(arr) {
+    const frequencies = {};
+    arr.forEach(value => {
+      if (frequencies.hasOwnProperty(value)) {
+        frequencies[value] += 1;
+      } else {
+        frequencies[value] = 1;
+      }
+    });
+
+    const frequenciesSorted = Object.entries(frequencies).sort((a, b) => b[1] - a[1]);
+    return Object.fromEntries(frequenciesSorted);
+  }
+
+  // const weatherDescription2Icon = {
+  //   'clear sky': '01d.png',
+  //   'few clouds': '02d.png',
+  //   'scattered clouds': '03d.png',
+  //   'broken clouds': '04d.png',
+  //   'shower rain': '09d.png',
+  //   'rain': '10d.png',
+  //   'thunderstorm': '11d.pn',
+  //   'snow': '13d.png',
+  //   'mist': '50d.png'
+  // }
+
+  function selectDataSource() {
+    const today = new Date();
+    // Object.keys(forecastPollutionData).length !== 0)
+    if (day === today.getDate() && date.getMonth() === today.getMonth()) { // the date is today
+
+      if (Object.keys(currentWeatherData).length !== 0) { // check if currentWeatherData is not empty object
+        data.humidity = currentWeatherData.main.humidity;
+        data.pressure = currentWeatherData.main.pressure;
+        data.temperature = Math.round(currentWeatherData.main.temp);
+        data.weatherDescription = currentWeatherData.weather[0].main;
+        data.weatherIcon = currentWeatherData.weather[0].icon;
+        data.windSpeedRounded = +currentWeatherData.wind.speed.toFixed(1);
+      }
+
+      if (Object.keys(currentPollutionData).length !== 0) { // check if currentPollutionData is not empty object
+        data.airQualityIndex = currentPollutionData.list[0].main.aqi;
+      }
+
+      if (Object.keys(forecastWeatherData).length !== 0) { // check if forecastWeatherData is not empty object
+        data.forecastWeatherList = forecastWeatherData.list.slice(0, 8).map((forecastForThreeHours) => {
+          return (
+            {
+              temperature: Math.round(forecastForThreeHours.main.temp),
+              time: forecastForThreeHours.dt_txt.slice(11, 16),
+              weatherDescription: currentWeatherData.weather[0].main,
+              weatherIcon: forecastForThreeHours.weather[0].icon,
+            }
+          );
+        })
+      }
+    } else { // the date is not today
+
+      if (Object.keys(forecastWeatherData).length !== 0) { // check if forecastWeatherData is not empty object
+        // Select forecast data according the date received from prop
+        const weatherOfTheDay = forecastWeatherData.list.filter(forecastForThreeHours => new Date(forecastForThreeHours.dt_txt).getDate() === date.getDate());
+
+        // Calculate average daily temperature
+        const dailyTemperatures = weatherOfTheDay.map(forecastForThreeHours => forecastForThreeHours.main.temp);
+        data.temperature = Math.round(calculateAverage(dailyTemperatures));
+
+        // Select icon of the most frequent weather for the day
+        const dailyWeatherIcons = weatherOfTheDay.map(forecastForThreeHours => forecastForThreeHours.weather[0].icon);
+        data.weatherIcon = Object.keys(sortValuesByFrequency(dailyWeatherIcons))[0];
+
+        // Select description of the most frequent weather for the day
+        const dailyWeatherDescriptions = weatherOfTheDay.map(forecastForThreeHours => forecastForThreeHours.weather[0].description);
+        data.weatherDescription = Object.keys(sortValuesByFrequency(dailyWeatherDescriptions))[0];
+      }
+    }
+  }
+  
+  selectDataSource();
+
   if (size === 'medium') {
     return (
       <section
         id={id}
         className='w-80 px-4 py-8 border-2 border-gray-200 barder-solid rounded-md'
       >
-        <h2 className='text-center text-2xl'>{currentDate} {currentMonth}</h2>
+        <h2 className='text-center text-2xl'>{day} {month}</h2>
         <div
           className='flex justify-center items-center gap-10 mt-8'
           tabIndex={id + 1}
         >
-          {main ? <p className='text-7xl font-medium'>{Math.round(main.temp)}<span className='text-2xl align-super'>°C</span></p> : <p>Loading...</p>}
+          {data.temperature ?
+            <p className='text-7xl font-medium'>{data.temperature}<span className='text-2xl align-super'>°C</span></p> : <p>Loading...</p>
+          }
           {/* {main ? <p className='text-xl'>Feels like: {Math.round(main.feels_like)} °C</p> : <p>Loading...</p>} */}
-          {main ? 
+          {data.weatherIcon && data.weatherDescription ? 
             <div className='bg-sky-500 rounded-md'>
               <img
-                src={`https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`}
-                alt={`${weather[0].main}`}
+                src={`https://openweathermap.org/img/wn/${data.weatherIcon}@2x.png`}
+                alt={data.weatherDescription}
               />
             </div>
             :
@@ -101,41 +177,43 @@ const WeatherForDay = ({ date, id, size, type }) => {
           className='text-2xl text-center mt-8'
           tabIndex={id + 2}
         >
-          {wind ? <p>{beaufortWindScale(windSpeedRounded).description}: {ms2kmh(windSpeedRounded).toFixed()} km/h</p> : <p>Loading...</p>}
+          {data.windSpeedRounded ?
+            <p>{beaufortWindScale(data.windSpeedRounded).description}: {ms2kmh(data.windSpeedRounded).toFixed()} km/h</p> : <p>Loading...</p>
+          }
         </div>
         <div
           className='text-2xl text-center mt-2'
           tabIndex={id + 3}
         >
-          {pollution ? <p>Air quality: {aqiDecoder[pollution.main.aqi]}</p> : <p>Loading...</p>}
+          {data.airQualityIndex ? <p>Air quality: {aqiDecoder[data.airQualityIndex]}</p> : <p>Loading...</p>}
         </div>
         <div
           className='text-2xl text-center mt-2'
           tabIndex={id + 4}
         >
-          {main ? <p>Humidity: {main.humidity} %</p> : <p>Loading...</p>}
-          {main ? <p className='mt-2'>Pressure: {main.pressure} hPa</p> : <p>Loading...</p>}
+          {data.humidity ? <p>Humidity: {data.humidity} %</p> : <p>Loading...</p>}
+          {data.pressure ? <p className='mt-2'>Pressure: {data.pressure} hPa</p> : <p>Loading...</p>}
         </div>
         <div
           className='mt-8 flex gap-x-3 overflow-x-scroll overflow-y-hidden'
           tabIndex={id + 5}
         >
           {
-            forecastList ?
-            forecastList.slice(0, 8).map((forecastForThreeHours, index) => {
+            data.forecastWeatherList ?
+            data.forecastWeatherList.map((forecastForThreeHours, index) => {
               return (
                 <div
                   className='flex flex-col gap-y-1 items-center'
                   key={index}
                 >
-                  <time>{forecastForThreeHours.dt_txt.slice(11, 16)}</time>
+                  <time>{forecastForThreeHours.time}</time>
                   <div className='w-11 h-11 flex justify-center items-center bg-sky-500 rounded'>
                     <img
-                      src={`https://openweathermap.org/img/wn/${forecastForThreeHours.weather[0].icon}.png`}
-                      alt={`${forecastForThreeHours.weather[0].main}`}
+                      src={`https://openweathermap.org/img/wn/${forecastForThreeHours.weatherIcon}.png`}
+                      alt={forecastForThreeHours.weatherDescription}
                     />
                   </div>
-                  <p>{Math.round(forecastForThreeHours.main.temp)}°C</p>
+                  <p>{forecastForThreeHours.temperature}°C</p>
                 </div>
               )
             })
@@ -153,18 +231,20 @@ const WeatherForDay = ({ date, id, size, type }) => {
         id={id}
         className='flex flex-col items-center w-20 p-1 border-2 border-gray-200 barder-solid rounded-md'
       >
-        <h2 className='text-center text-md'>{currentDate} {currentMonth.slice(0, 3)}</h2>
-        {main ?
+        <h2 className='text-center text-md'>{day} {month.slice(0, 3)}</h2>
+        {data.weatherIcon && data.weatherDescription ?
           <div className='w-11 h-11 flex justify-center items-center bg-sky-500 rounded mb-1'>
             <img
-              src={`https://openweathermap.org/img/wn/${weather[0].icon}.png`}
-              alt={`${weather[0].main}`}
+              src={`https://openweathermap.org/img/wn/${data.weatherIcon}.png`}
+              alt={data.weatherDescription}
             />
           </div>
           :
-          <p>Loading...</p>
+          <p>n.d.</p>
         }
-        {main ? <p className='text-4xl font-medium'>{Math.round(main.temp)}<span className='text-sm align-super'>°C</span></p> : <p>Loading...</p>}
+        {data.temperature ?
+          <p className='text-4xl font-medium'>{data.temperature}<span className='text-sm align-super'>°C</span></p> : <p>n.d.</p>
+        }
       </section>
     );
   };
