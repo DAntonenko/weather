@@ -3,11 +3,14 @@ import { openweathermapApiKey } from '../constants';
 
 export const fetchCurrentPollutionData = createAsyncThunk(
   'currentPollutionData/fetchCurrentPollutionData',
-  async function({ latitude, longitude }, {rejectWithValue}) {
+  async function(place, {rejectWithValue}) {
     try {
-      // const response = await fetch('http://api.openweathermap.org/data/2.5/weather?q=Tbilisi,ge&APPID=${appid}&units=metric');
-      const response =
-        await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${openweathermapApiKey}&units=metric`);
+      let response;
+      console.log(place);
+      place.hasOwnProperty('lat') && place.hasOwnProperty('lon')?
+      response = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${place.lat}&lon=${place.lon}&appid=${openweathermapApiKey}&units=metric`)
+      :
+      response = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?q=${place.city},${place.country}&APPID=${openweathermapApiKey}&units=metric`);
 
       if(!response.ok) {
         throw new Error('Server Error');

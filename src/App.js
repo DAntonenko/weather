@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setGeolocationData } from './store/geolocationSlice';
 import { fetchReverseGeocodingData } from './store/reverseGeocodingSlice';
@@ -7,7 +7,7 @@ import { fetchCurrentPollutionData } from './store/currentPollutionSlice';
 import { fetchForecastWeatherData } from './store/forecastWeatherSlice';
 import { fetchForecastPollutionData } from './store/forecastPollutionSlice';
 
-import countries from 'countries-list';
+// import countries from 'countries-list';
 import Select from './components/Select';
 import WeatherForDay from './components/WeatherForDay';
 
@@ -18,13 +18,22 @@ const App = () => {
 
   const date = new Date();
 
+  const [location, setLocation] = useState('currentLocation');
+
   const { latitude, longitude } = useSelector(state => state.geolocation.geolocationData);
+  const coords = {
+    lat: latitude,
+    lon: longitude
+  };
+
+  let place;
+  location === 'currentLocation' && latitude && longitude ? place = coords : place = location;
 
   useEffect(() => {
     const fetchActualData = () => {
       dispatch(fetchReverseGeocodingData({latitude, longitude}));
-      dispatch(fetchCurrentWeatherData({latitude, longitude}));
-      dispatch(fetchCurrentPollutionData({latitude, longitude}));
+      dispatch(fetchCurrentWeatherData(place));
+      dispatch(fetchCurrentPollutionData(place));
       dispatch(fetchForecastWeatherData({latitude, longitude}));
       dispatch(fetchForecastPollutionData({latitude, longitude}));
     };
@@ -45,7 +54,7 @@ const App = () => {
         dispatch(setGeolocationData(position));
       });    
     }
-  }, [dispatch, latitude, longitude]);
+  }, [dispatch, latitude, longitude, place]);
 
   // const reverseGeocodingData = useSelector(state => state.reverseGeocoding.reverseGeocodingData);
   // const currentWeatherData = useSelector(state => state.currentWeather.currentWeatherData);
@@ -138,9 +147,16 @@ const App = () => {
   return (
     <div className='App w-screen overflow-hidden p-2 flex flex-col items-center font-mukta'>
       <Select
-        initialValue='Tbilisi'
-        options={['Tbilisi', 'Batumi', 'Kutaisi', 'Kobuleti', 'Tallinn', 'Narva', 'Saint-Petersburg', 'Sosnoviy Bor']}
-        setCity={(city) => console.log('App: ', city)}
+        initialValue={{city: 'Tbilisi', country: 'ge'}}
+        options={[
+          {city: 'Tbilisi', country: 'ge'},
+          {city: 'Batumi', country: 'ge'},
+          {city: 'Kutaisi', country: 'ge'},
+          {city: 'Kobuleti', country: 'ge'},
+          {city: 'Tallinn', country: 'ee'},
+          {city: 'Narva', country: 'ee'},
+        ]}
+        setCity={receivedLocation => setLocation(receivedLocation)}
       />
       {/* {name ? <h2 className="text-3xl font-bold">{name}</h2> : <h2>Current location</h2>}
       {countries && country ? <h2>{countries.countries[country].emoji}</h2> : <p>Loading...</p>}

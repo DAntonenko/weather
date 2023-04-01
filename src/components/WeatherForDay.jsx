@@ -133,12 +133,10 @@ const WeatherForDay = ({ date, id, size, type }) => {
         // Filter daytime forecast data only from weatherOfTheDay
         const daytimeWeather = weatherOfTheDay.filter(forecastForThreeHours => 
           +forecastForThreeHours.dt_txt.slice(11, 13) >= 9 && +forecastForThreeHours.dt_txt.slice(11, 13) <= 21);
-        console.log('daytimeWeather: ', daytimeWeather);
 
         // Filter nighttime forecast data only from weatherOfTheDay
         const nighttimeWeather = weatherOfTheDay.filter(forecastForThreeHours => 
           +forecastForThreeHours.dt_txt.slice(11, 13) < 9);
-        console.log('nighttimeWeather: ', nighttimeWeather);
 
         // Calculate average daily temperature
         const dailyTemperatures = weatherOfTheDay.map(forecastForThreeHours => forecastForThreeHours.main.temp);
