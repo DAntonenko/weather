@@ -12,6 +12,7 @@ import {
 import storage from 'redux-persist/lib/storage';
 
 import geolocationReducer from './geolocationSlice';
+import directGeocodingReducer from './directGeocodingSlice';
 import reverseGeocodingReducer from './reverseGeocodingSlice';
 import currentWeatherReducer from './currentWeatherSlice';
 import currentPollutionReducer from './currentPollutionSlice';
@@ -20,6 +21,7 @@ import forecastPollutionReducer from './forecastPollutionSlice';
 
 const rootReducer = combineReducers({
   geolocation: geolocationReducer,
+  directGeocoding: directGeocodingReducer,
   reverseGeocoding: reverseGeocodingReducer,
   currentWeather: currentWeatherReducer,
   currentPollution: currentPollutionReducer,

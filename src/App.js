@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setGeolocationData } from './store/geolocationSlice';
+import { fetchDirectGeocodingData } from './store/directGeocodingSlice';
 import { fetchReverseGeocodingData } from './store/reverseGeocodingSlice';
 import { fetchCurrentWeatherData } from './store/currentWeatherSlice';
 import { fetchCurrentPollutionData } from './store/currentPollutionSlice';
@@ -30,17 +31,19 @@ const App = () => {
   location === 'currentLocation' && latitude && longitude ? place = coords : place = location;
 
   useEffect(() => {
+    console.log('App useEffect: ', location);
     const fetchActualData = () => {
+      if (place.hasOwnProperty('city')) dispatch(fetchDirectGeocodingData(place));
       dispatch(fetchReverseGeocodingData({latitude, longitude}));
       dispatch(fetchCurrentWeatherData(place));
-      dispatch(fetchCurrentPollutionData(place));
+      dispatch(fetchCurrentPollutionData({latitude, longitude}));
       dispatch(fetchForecastWeatherData({latitude, longitude}));
       dispatch(fetchForecastPollutionData({latitude, longitude}));
     };
     
     const updateDataAtIntervals = () => {
       setInterval(() => {
-        dispatch(fetchCurrentWeatherData({latitude, longitude}));
+        dispatch(fetchCurrentWeatherData(place));
         dispatch(fetchCurrentPollutionData({latitude, longitude}));
         dispatch(fetchForecastWeatherData({latitude, longitude}));
       }, 900000);
