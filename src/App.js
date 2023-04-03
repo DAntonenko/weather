@@ -11,6 +11,7 @@ import { fetchForecastPollutionData } from './store/forecastPollutionSlice';
 // import countries from 'countries-list';
 import Select from './components/Select';
 import WeatherForDay from './components/WeatherForDay';
+import FiveDaysForecast from './components/FiveDaysForecast';
 
 import './App.css';
 
@@ -79,17 +80,17 @@ const App = () => {
     }
   }, [dispatch, latitude, longitude, directGeocodingLatitude, directGeocodingLongitude, locationMode, location]);
 
-  const fiveDaysForecast = [1, 2, 3, 4, 5].map((numberOfDays, index) => {
-    return (
-      <WeatherForDay
-        date={new Date(date.getTime() + (86400000) * numberOfDays)} // add days to current date; 86400000 is number of milliseconds in a day
-        id={numberOfDays + 1}
-        size='small'
-        type='general'
-        key={index}
-      />
-    )
-  });
+  // const fiveDaysForecast = [1, 2, 3, 4, 5].map((numberOfDays, index) => {
+  //   return (
+  //     <WeatherForDay
+  //       date={new Date(date.getTime() + (86400000) * numberOfDays)} // add days to current date; 86400000 is number of milliseconds in a day
+  //       id={numberOfDays + 1}
+  //       size='small'
+  //       type='general'
+  //       key={index}
+  //     />
+  //   )
+  // });
 
   return (
     <div className='App w-screen overflow-hidden p-2 flex flex-col items-center font-mukta'>
@@ -124,34 +125,8 @@ const App = () => {
       />
 
       <section className='mt-8 w-full flex gap-x-1 overflow-x-scroll'>
-        {fiveDaysForecast}
+        <FiveDaysForecast date={date} />
       </section>
-      {/* {main ? <p>Temperature: {Math.round(main.temp)} °C</p> : <p>Loading...</p>}
-      {main ? <p>Feels like: {Math.round(main.feels_like)} °C</p> : <p>Loading...</p>}
-      {weather ? <p>Weather: {weather[0].main + ' (' + weather[0].description + ')'}</p> : <p>Loading...</p>}
-      {clouds ? <p>Cloudiness: {clouds.all} %</p> : <p>Loading...</p>}
-      {wind ? <p>Wind: {windSpeedRounded} m/s ({ms2kmh(windSpeedRounded).toFixed(1)} km/h)</p> : <p>Loading...</p>}
-      {wind ? <p>Beaufort wind scale: {beaufortWindScale(windSpeedRounded).number} - {beaufortWindScale(windSpeedRounded).description}</p> : <p>Loading...</p>}
-      {visibility ? <p>Visibility: {visibility} m</p> : <p>Loading...</p>}
-      {main ? <p>Humidity: {main.humidity} %</p> : <p>Loading...</p>}
-      {main ? <p>Pressure: {main.pressure} hPa</p> : <p>Loading...</p>}
-      {pollution ? <p>Air quality: {aqiDecoder[pollution.main.aqi]}</p> : <p>Loading...</p>}
-      {pollution ? <p>CO (Carbon monoxide): {pollution.components.co} μg/m3</p> : <p>Loading...</p>}
-      {pollution ? <p>NO (Nitrogen monoxide): {pollution.components.no} μg/m3</p> : <p>Loading...</p>}
-      {pollution ? <p>NO2 (Nitrogen dioxide): {pollution.components.no2} μg/m3</p> : <p>Loading...</p>}
-      {pollution ? <p>O3 (Ozone): {pollution.components.o3} μg/m3</p> : <p>Loading...</p>}
-      {pollution ? <p>SO2 (Sulphur dioxide): {pollution.components.so2} μg/m3</p> : <p>Loading...</p>}
-      {pollution ? <p>PM2.5 (Fine particles matter): {pollution.components.pm2_5} μg/m3</p> : <p>Loading...</p>}
-      {pollution ? <p>PM10 (Coarse particulate matter): {pollution.components.pm10} μg/m3</p> : <p>Loading...</p>}
-      {pollution ? <p>NH3 (Ammonia): {pollution.components.nh3} μg/m3</p> : <p>Loading...</p>}
-      {forecastList
-        ? 
-        sortForecastListByDate(forecastList).map((dailyWeather, index) => {
-          return <p key={index}>Average t° of {getDateFromDtTxt(dailyWeather[0].dt_txt)}: {calculateAverageTemperature(dailyWeather)} °C</p>
-        })
-        :
-        <p>Loading...</p>
-      } */}
     </div>
   );
 }

@@ -1,15 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 // import { flushSync } from 'react-dom';
-import PropTypes, { string }  from 'prop-types';
+import PropTypes  from 'prop-types';
 
 
 const Select = ({ initialValue, options, setCity }) => {
-  Select.propTypes = {
-    initialValue: PropTypes.shape({city: string, country: string}),
-    options: PropTypes.arrayOf(PropTypes.shape({city: string, country: string})),
-    setCity: PropTypes.func.isRequired,
-  }
-
   const [value, setValue] = useState(initialValue);
   const [isInFocus, setIsInFocus] = useState(false);
   const [currentInputValue, setCurrentInputValue] = useState();
@@ -113,5 +107,11 @@ const Select = ({ initialValue, options, setCity }) => {
     </div>
   )
 }
+
+Select.propTypes = {
+  initialValue: PropTypes.shape({city: PropTypes.string, country: PropTypes.string}),
+  options: PropTypes.arrayOf(PropTypes.shape({city: PropTypes.string, country: PropTypes.string})),
+  setCity: PropTypes.func.isRequired,
+};
 
 export default Select;

@@ -3,13 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes  from 'prop-types';
 
 const WeatherForDay = ({ date, id, size, type }) => {
-  WeatherForDay.propTypes = {
-    date: PropTypes.object.isRequired,
-    id: PropTypes.number.isRequired,
-    size: PropTypes.oneOf(['small', 'medium']).isRequired,
-    type: PropTypes.oneOf(['general', 'main', 'wind', 'air_quality', 'day_forecast']).isRequired,
-  };
-
   const day = date.getDate();
   const month = [
     'January',
@@ -270,6 +263,13 @@ const WeatherForDay = ({ date, id, size, type }) => {
       </section>
     );
   };
+};
+
+WeatherForDay.propTypes = {
+  date: PropTypes.object.isRequired,
+  id: PropTypes.number.isRequired,
+  size: PropTypes.oneOf(['small', 'medium']).isRequired,
+  type: PropTypes.oneOf(['general', 'main', 'wind', 'air_quality', 'day_forecast']).isRequired,
 };
 
 export default WeatherForDay;
