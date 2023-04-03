@@ -4,7 +4,6 @@ import { openweathermapApiKey } from '../constants';
 export const fetchDirectGeocodingData = createAsyncThunk(
   'directGeocodingData/fetchDirectGeocodingData',
   async function(place, {rejectWithValue}) {
-    console.log('direct', place);
     try {
       const response =
         await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${place.city}&limit=5&appid=${openweathermapApiKey}&units=metric`);

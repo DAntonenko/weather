@@ -19,33 +19,53 @@ const App = () => {
 
   const date = new Date();
 
-  const [location, setLocation] = useState('currentLocation');
+  const [locationMode, setLocationMode] = useState('currentLocation');
+  const [coords, setCoords] = useState(null);
+  const [location, setLocation] = useState(null);
 
   const { latitude, longitude } = useSelector(state => state.geolocation.geolocationData);
-  const coords = {
-    lat: latitude,
-    lon: longitude
-  };
 
-  let place;
-  location === 'currentLocation' && latitude && longitude ? place = coords : place = location;
+  const directGeocodingLatitude = useSelector(state => state.directGeocoding.directGeocodingData && state.directGeocoding.directGeocodingData.lat);
+  const directGeocodingLongitude = useSelector(state => state.directGeocoding.directGeocodingData && state.directGeocoding.directGeocodingData.lon);
 
-  useEffect(() => {
+  useEffect(() => { 
+    switch (locationMode) {
+      case 'currentLocation':
+        latitude && longitude && setCoords({lat: latitude, lon: longitude});
+        break;
+      case 'selectedLocation':
+        directGeocodingLatitude && directGeocodingLongitude && setCoords({lat: directGeocodingLatitude, lon: directGeocodingLongitude});
+        break;
+      default:
+        setCoords(null);
+    };    
+
     console.log('App useEffect: ', location);
     const fetchActualData = () => {
-      if (place.hasOwnProperty('city')) dispatch(fetchDirectGeocodingData(place));
-      dispatch(fetchReverseGeocodingData({latitude, longitude}));
-      dispatch(fetchCurrentWeatherData(place));
-      dispatch(fetchCurrentPollutionData({latitude, longitude}));
-      dispatch(fetchForecastWeatherData({latitude, longitude}));
-      dispatch(fetchForecastPollutionData({latitude, longitude}));
+      if (locationMode === 'selectedLocation') dispatch(fetchDirectGeocodingData(location));
+
+      if (locationMode === 'currentLocation') dispatch(fetchReverseGeocodingData(coords));
+
+      if (locationMode === 'currentLocation') dispatch(fetchCurrentWeatherData(coords));
+      if (locationMode === 'selectedLocation') dispatch(fetchCurrentWeatherData(location));
+
+      dispatch(fetchCurrentPollutionData(coords));
+
+      if (locationMode === 'currentLocation') dispatch(fetchForecastWeatherData(coords));
+      if (locationMode === 'selectedLocation') dispatch(fetchForecastWeatherData(location));
+
+      dispatch(fetchForecastPollutionData(coords));
     };
     
     const updateDataAtIntervals = () => {
       setInterval(() => {
-        dispatch(fetchCurrentWeatherData(place));
-        dispatch(fetchCurrentPollutionData({latitude, longitude}));
-        dispatch(fetchForecastWeatherData({latitude, longitude}));
+        if (locationMode === 'currentLocation') dispatch(fetchCurrentWeatherData(coords));
+        if (locationMode === 'selectedLocation') dispatch(fetchCurrentWeatherData(location));
+
+        dispatch(fetchCurrentPollutionData(coords));
+        
+        if (locationMode === 'currentLocation') dispatch(fetchForecastWeatherData(coords));
+        if (locationMode === 'selectedLocation') dispatch(fetchForecastWeatherData(location));
       }, 900000);
     };
 
@@ -57,83 +77,7 @@ const App = () => {
         dispatch(setGeolocationData(position));
       });    
     }
-  }, [dispatch, latitude, longitude, place]);
-
-  // const reverseGeocodingData = useSelector(state => state.reverseGeocoding.reverseGeocodingData);
-  // const currentWeatherData = useSelector(state => state.currentWeather.currentWeatherData);
-  // const pollutionDataList = useSelector(state => state.currentPollution.currentPollutionData.list);
-  // const forecastWeatherData = useSelector(state => state.forecastWeather.forecastWeatherData);
-
-  // const name = reverseGeocodingData ? reverseGeocodingData.name : null;
-  // const local_names = reverseGeocodingData ? reverseGeocodingData.local_names : null;
-  // const country = reverseGeocodingData ? reverseGeocodingData.country : null;
-
-  // const clouds = currentWeatherData ? currentWeatherData.clouds : null;
-  // const main = currentWeatherData ? currentWeatherData.main : null;
-  // const visibility = currentWeatherData ? currentWeatherData.visibility : null;
-  // const weather = currentWeatherData ? currentWeatherData.weather : null;
-  // const wind = currentWeatherData ? currentWeatherData.wind : null;
-  // const windSpeedRounded = wind ? +wind.speed.toFixed(1) : null;
-
-  // const pollution = pollutionDataList ? pollutionDataList[0] : null;
-
-  // const forecastList = forecastWeatherData.list;
-
-  // const ms2kmh = ms => ms * 3.6;
-
-  // const beaufortWindScale = windSpeed => {
-  //   if (windSpeed < 0.5) return {number: 0, description: 'Calm'};
-  //   else if (windSpeed >= 0.5 && windSpeed <= 1.5) return {number: 1, description: 'Light air'};
-  //   else if (windSpeed >= 1.6 && windSpeed <= 3.3) return {number: 2, description: 'Light breeze'};
-  //   else if (windSpeed >= 3.4 && windSpeed <= 5.4) return {number: 3, description: 'Gentle breeze'};
-  //   else if (windSpeed >= 5.5 && windSpeed <= 7.9) return {number: 4, description: 'Moderate breeze'};
-  //   else if (windSpeed >= 8 && windSpeed <= 10.7) return {number: 5, description: 'Fresh breeze'};
-  //   else if (windSpeed >= 10.8 && windSpeed <= 13.8) return {number: 6, description: 'Strong breeze'};
-  //   else if (windSpeed >= 13.9 && windSpeed <= 17.1) return {number: 7, description: 'Near gale'};
-  //   else if (windSpeed >= 17.2 && windSpeed <= 20.7) return {number: 8, description: 'Gale'};
-  //   else if (windSpeed >= 20.8 && windSpeed <= 24.4) return {number: 9, description: 'Strong gale'};
-  //   else if (windSpeed >= 24.5 && windSpeed <= 28.4) return {number: 10, description: 'Storm'};
-  //   else if (windSpeed >= 28.5 && windSpeed <= 32.6) return {number: 11, description: 'Violent storm'};
-  //   else if (windSpeed >= 32.7) return {number: 12, description: 'Hurricane'};
-  //   else return {number: '?', description: 'Unknown'};
-  // }
-
-  // const aqiDecoder = {
-  //   1: 'Good',
-  //   2: 'Fair',
-  //   3: 'Moderate',
-  //   4: 'Poor',
-  //   5: 'Very Poor'
-  // };
-
-  // function getDateFromDtTxt(dtTxt) {
-  //   return dtTxt.slice(0, 10); //The first 10 symbols of dt_txt field represents date
-  // }
-
-  // function sortForecastListByDate(forecastList) {
-  //   let currentDate = getDateFromDtTxt(forecastList[0].dt_txt);
-  //   const sortedByDateForecast = [];
-  //   let oneDateForecast = [];
-
-  //   forecastList.forEach((listItem) => {
-  //     if (getDateFromDtTxt(listItem.dt_txt) === currentDate) {
-  //       oneDateForecast.push(listItem);
-  //     } else {
-  //       sortedByDateForecast.push(oneDateForecast);
-  //       currentDate = getDateFromDtTxt(listItem.dt_txt);
-  //       oneDateForecast = [];
-  //       oneDateForecast.push(listItem);
-  //     };
-  //   });
-
-  //   sortedByDateForecast.push(oneDateForecast);
-  //   return sortedByDateForecast;
-  // }
-
-  // function calculateAverageTemperature(weatherDataArr) {
-  //   const averageTemperature = weatherDataArr.reduce((temperaturesSum, weatherData) => temperaturesSum + weatherData.main.temp, 0) / weatherDataArr.length;
-  //   return Math.round(averageTemperature);
-  // }
+  }, [dispatch, latitude, longitude, directGeocodingLatitude, directGeocodingLongitude, locationMode, location]);
 
   const fiveDaysForecast = [1, 2, 3, 4, 5].map((numberOfDays, index) => {
     return (
@@ -159,7 +103,11 @@ const App = () => {
           {city: 'Tallinn', country: 'ee'},
           {city: 'Narva', country: 'ee'},
         ]}
-        setCity={receivedLocation => setLocation(receivedLocation)}
+        setCity={receivedLocation => {
+          if (locationMode !== 'selectedLocation') setLocationMode('selectedLocation');
+          console.log('setCity receivedLocation: ', receivedLocation);
+          setLocation(receivedLocation);
+        }}
       />
       {/* {name ? <h2 className="text-3xl font-bold">{name}</h2> : <h2>Current location</h2>}
       {countries && country ? <h2>{countries.countries[country].emoji}</h2> : <p>Loading...</p>}

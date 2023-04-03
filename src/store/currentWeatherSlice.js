@@ -3,13 +3,13 @@ import { openweathermapApiKey } from '../constants';
 
 export const fetchCurrentWeatherData = createAsyncThunk(
   'currentWeatherData/fetchCurrentWeatherData',
-  async function( place, {rejectWithValue}) {
+  async function( location, {rejectWithValue}) {
     try {
       let response;
-      place.hasOwnProperty('lat') && place.hasOwnProperty('lon')?
-      response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${place.lat}&lon=${place.lon}&appid=${openweathermapApiKey}&units=metric`)
+      location.hasOwnProperty('lat') && location.hasOwnProperty('lon') ?
+      response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&appid=${openweathermapApiKey}&units=metric`)
       :
-      response = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${place.city},${place.country}&APPID=${openweathermapApiKey}&units=metric`);
+      response = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${location.city},${location.country}&APPID=${openweathermapApiKey}&units=metric`);
 
       if(!response.ok) {
         throw new Error('Server Error');

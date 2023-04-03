@@ -3,10 +3,10 @@ import { openweathermapApiKey } from '../constants';
 
 export const fetchForecastPollutionData = createAsyncThunk(
   'forecastPollutionData/fetchForecastPollutionData',
-  async function({ latitude, longitude }, {rejectWithValue}) {
+  async function({ lat, lon }, {rejectWithValue}) {
     try {
       const response =
-        await fetch(`http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${latitude}&lon=${longitude}&appid=${openweathermapApiKey}&units=metric`);
+        await fetch(`http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lon}&appid=${openweathermapApiKey}&units=metric`);
 
       if(!response.ok) {
         throw new Error('Server Error');
