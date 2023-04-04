@@ -160,7 +160,7 @@ const WeatherForDay = ({ date, id, size, type }) => {
     return (
       <section
         id={id}
-        className='w-80 px-4 py-8 border-2 border-gray-200 barder-solid rounded-md'
+        className=' w-80 sm:w-auto px-4 py-8'
       >
         <h2 className='text-center text-2xl'>{day} {month}</h2>
         <div
@@ -204,7 +204,7 @@ const WeatherForDay = ({ date, id, size, type }) => {
           {data.pressure ? <p className='mt-2'>Pressure: {data.pressure} hPa</p> : <p>Loading...</p>}
         </div>
         <div
-          className='mt-8 flex gap-x-3 overflow-x-scroll overflow-y-hidden'
+          className='mt-8 flex gap-x-3 overflow-x-scroll sm:overflow-x-hidden overflow-y-hidden'
           tabIndex={id + 5}
         >
           {
@@ -238,7 +238,7 @@ const WeatherForDay = ({ date, id, size, type }) => {
     return (
       <section
         id={id}
-        className='flex flex-col items-center w-20 p-1 border-2 border-gray-200 barder-solid rounded-md'
+        className='flex flex-col items-center w-20 p-1'
       >
         <h2 className='text-center text-md'>{day} {month.slice(0, 3)}</h2>
         {data.weatherIcon && data.weatherDescription ?

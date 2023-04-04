@@ -123,8 +123,8 @@ const App = () => {
         size='medium'
         type='general'
       />
-
-      <section className='mt-8 w-full flex gap-x-1 overflow-x-scroll'>
+      <hr className=' w-full border-t-2 border-solid border-gray-300' />
+      <section className='mt-8 w-full flex gap-x-2 justify-center overflow-x-auto'>
         <FiveDaysForecast date={date} />
       </section>
     </div>
