@@ -9,7 +9,7 @@ export const fetchCurrentWeatherData = createAsyncThunk(
       location.hasOwnProperty('lat') && location.hasOwnProperty('lon') ?
       response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&appid=${openweathermapApiKey}&units=metric`)
       :
-      response = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${location.city},${location.country}&APPID=${openweathermapApiKey}&units=metric`);
+      response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location.city},${location.country}&APPID=${openweathermapApiKey}&units=metric`);
 
       if(!response.ok) {
         throw new Error('Server Error');

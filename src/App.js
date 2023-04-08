@@ -20,28 +20,51 @@ const App = () => {
 
   const date = new Date();
 
-  const [locationMode, setLocationMode] = useState('currentLocation');
+  const [locationMode, setLocationMode] = useState('selectedLocation');
   const [coords, setCoords] = useState(null);
   const [location, setLocation] = useState(null);
+  const [geolocationAvailable, setGeolocationAvailable] = useState(false);
+
+  // Check is geolocation permission granteg or not, and change corresponding state
+  navigator.permissions.query({name:'geolocation'}).then(result => {
+    console.log('permission: ', result.state);
+    if (result.state === 'granted') {
+      setGeolocationAvailable(true);
+    } else if (result.state === 'denied') {
+      setGeolocationAvailable(false);
+    }
+  });
+
+  console.log('geolocationAvailable: ', geolocationAvailable);
 
   const { latitude, longitude } = useSelector(state => state.geolocation.geolocationData);
 
   const directGeocodingLatitude = useSelector(state => state.directGeocoding.directGeocodingData && state.directGeocoding.directGeocodingData.lat);
   const directGeocodingLongitude = useSelector(state => state.directGeocoding.directGeocodingData && state.directGeocoding.directGeocodingData.lon);
 
-  useEffect(() => { 
-    switch (locationMode) {
-      case 'currentLocation':
-        latitude && longitude && setCoords({lat: latitude, lon: longitude});
-        break;
-      case 'selectedLocation':
-        directGeocodingLatitude && directGeocodingLongitude && setCoords({lat: directGeocodingLatitude, lon: directGeocodingLongitude});
-        break;
-      default:
-        setCoords(null);
-    };    
+  useEffect(() => {
+
+    var watchID = navigator.geolocation.watchPosition((position) => {
+      dispatch(setGeolocationData(position));
+    });
+
+    if (latitude && longitude) {
+      switch (locationMode) {
+        case 'currentLocation':
+          setCoords({lat: latitude, lon: longitude});
+          break;
+        case 'selectedLocation':
+          directGeocodingLatitude && directGeocodingLongitude && setCoords({lat: directGeocodingLatitude, lon: directGeocodingLongitude});
+          break;
+        default:
+          setCoords(null);
+      };
+    } else {
+      directGeocodingLatitude && directGeocodingLongitude && setCoords({lat: directGeocodingLatitude, lon: directGeocodingLongitude});
+    }
 
     console.log('App useEffect: ', location);
+    console.log('permissions: ', PermissionStatus);
     const fetchActualData = () => {
       if (locationMode === 'selectedLocation') dispatch(fetchDirectGeocodingData(location));
 
@@ -70,27 +93,23 @@ const App = () => {
       }, 900000);
     };
 
-    if (latitude && longitude) {
-      fetchActualData();
-      updateDataAtIntervals();
-    } else {
-      var watchID = navigator.geolocation.watchPosition((position) => {
-        dispatch(setGeolocationData(position));
-      });    
-    }
-  }, [dispatch, latitude, longitude, directGeocodingLatitude, directGeocodingLongitude, locationMode, location]);
+    // if (latitude && longitude) {
+    //   fetchActualData();
+    //   updateDataAtIntervals();
+    // } else {
+    //   if (navigator) {
+    //     var watchID = navigator.geolocation.watchPosition((position) => {
+    //       dispatch(setGeolocationData(position));
+    //     });    
+    //   };
+    // }
 
-  // const fiveDaysForecast = [1, 2, 3, 4, 5].map((numberOfDays, index) => {
-  //   return (
-  //     <WeatherForDay
-  //       date={new Date(date.getTime() + (86400000) * numberOfDays)} // add days to current date; 86400000 is number of milliseconds in a day
-  //       id={numberOfDays + 1}
-  //       size='small'
-  //       type='general'
-  //       key={index}
-  //     />
-  //   )
-  // });
+    fetchActualData();
+    updateDataAtIntervals();
+
+  // }, [dispatch, latitude, longitude, directGeocodingLatitude, directGeocodingLongitude, locationMode, location]);
+  }, [dispatch, geolocationAvailable, directGeocodingLatitude, directGeocodingLongitude, locationMode, location, latitude, longitude]);
+
 
   return (
     <div className='App w-screen overflow-hidden p-2 flex flex-col items-center font-mukta'>

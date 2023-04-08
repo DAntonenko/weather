@@ -6,7 +6,7 @@ export const fetchForecastPollutionData = createAsyncThunk(
   async function({ lat, lon }, {rejectWithValue}) {
     try {
       const response =
-        await fetch(`http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lon}&appid=${openweathermapApiKey}&units=metric`);
+        await fetch(`https://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lon}&appid=${openweathermapApiKey}&units=metric`);
 
       if(!response.ok) {
         throw new Error('Server Error');

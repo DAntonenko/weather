@@ -6,7 +6,7 @@ export const fetchDirectGeocodingData = createAsyncThunk(
   async function(place, {rejectWithValue}) {
     try {
       const response =
-        await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${place.city}&limit=5&appid=${openweathermapApiKey}&units=metric`);
+        await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${place.city}&limit=5&appid=${openweathermapApiKey}&units=metric`);
 
       if(!response.ok) {
         throw new Error('Server Error');
