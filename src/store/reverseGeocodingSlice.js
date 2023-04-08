@@ -6,7 +6,7 @@ export const fetchReverseGeocodingData = createAsyncThunk(
   async function({ latitude, longitude }, {rejectWithValue}) {
     try {
       const response =
-        await fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=5&appid=${openweathermapApiKey}&units=metric`);
+        await fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=5&appid=${openweathermapApiKey}&units=metric`);
 
       if(!response.ok) {
         throw new Error('Server Error');
