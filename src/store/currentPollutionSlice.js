@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { openweathermapApiKey } from '../constants';
 
 export const fetchCurrentPollutionData = createAsyncThunk(
   'currentPollutionData/fetchCurrentPollutionData',
   async function({ lat, lon }, {rejectWithValue}) {
     try {
       const response =
-        await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${openweathermapApiKey}&units=metric`);
+        await await fetch(`http://0.0.0.0:8000/current-pollution-coords?lat=${lat}&lon=${lon}`);
 
       if(!response.ok) {
         throw new Error('Server Error');

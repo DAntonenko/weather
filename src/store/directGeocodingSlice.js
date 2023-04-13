@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { openweathermapApiKey } from '../constants';
 
 export const fetchDirectGeocodingData = createAsyncThunk(
   'directGeocodingData/fetchDirectGeocodingData',
   async function(place, {rejectWithValue}) {
     try {
       const response =
-        await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${place.city}&limit=5&appid=${openweathermapApiKey}&units=metric`);
+        await await fetch(`http://0.0.0.0:8000/direct-geocoding?q=${place.city}`);
 
       if(!response.ok) {
         throw new Error('Server Error');

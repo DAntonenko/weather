@@ -27,15 +27,12 @@ const App = () => {
 
   // Check is geolocation permission granteg or not, and change corresponding state
   navigator.permissions.query({name:'geolocation'}).then(result => {
-    console.log('permission: ', result.state);
     if (result.state === 'granted') {
       setGeolocationAvailable(true);
     } else if (result.state === 'denied') {
       setGeolocationAvailable(false);
     }
   });
-
-  console.log('geolocationAvailable: ', geolocationAvailable);
 
   const { latitude, longitude } = useSelector(state => state.geolocation.geolocationData);
 
@@ -63,8 +60,6 @@ const App = () => {
       directGeocodingLatitude && directGeocodingLongitude && setCoords({lat: directGeocodingLatitude, lon: directGeocodingLongitude});
     }
 
-    console.log('App useEffect: ', location);
-    console.log('permissions: ', PermissionStatus);
     const fetchActualData = () => {
       if (locationMode === 'selectedLocation') dispatch(fetchDirectGeocodingData(location));
 
@@ -107,7 +102,6 @@ const App = () => {
     fetchActualData();
     updateDataAtIntervals();
 
-  // }, [dispatch, latitude, longitude, directGeocodingLatitude, directGeocodingLongitude, locationMode, location]);
   }, [dispatch, geolocationAvailable, directGeocodingLatitude, directGeocodingLongitude, locationMode, location, latitude, longitude]);
 
 
@@ -125,7 +119,6 @@ const App = () => {
         ]}
         setCity={receivedLocation => {
           if (locationMode !== 'selectedLocation') setLocationMode('selectedLocation');
-          console.log('setCity receivedLocation: ', receivedLocation);
           setLocation(receivedLocation);
         }}
       />
