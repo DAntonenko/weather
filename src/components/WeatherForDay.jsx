@@ -111,7 +111,7 @@ const WeatherForDay = ({ date, id, size, type }) => {
             {
               temperature: Math.round(forecastForThreeHours.main.temp),
               time: forecastForThreeHours.dt_txt.slice(11, 16),
-              weatherDescription: currentWeatherData.weather[0].main,
+              weatherDescription: forecastForThreeHours.weather[0].main,
               weatherIcon: forecastForThreeHours.weather[0].icon,
             }
           );
