@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { openweathermapApiKey } from '../constants';
 
 export const fetchCurrentWeatherData = createAsyncThunk(
   'currentWeatherData/fetchCurrentWeatherData',
@@ -7,15 +6,16 @@ export const fetchCurrentWeatherData = createAsyncThunk(
     try {
       let response;
       location.hasOwnProperty('lat') && location.hasOwnProperty('lon') ?
-      response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&appid=${openweathermapApiKey}&units=metric`)
+      response = await fetch(`http://0.0.0.0:8000/current-weather-coords?lat=${location.lat}&lon=${location.lon}`)
       :
-      response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location.city},${location.country}&APPID=${openweathermapApiKey}&units=metric`);
+      response = await fetch(`http://0.0.0.0:8000/current-weather-city?city=${location.city}&country=${location.country}`);
 
       if(!response.ok) {
         throw new Error('Server Error');
       }
 
       const currentWeatherData = await response.json();
+
       return currentWeatherData;
       
     } catch (error) {

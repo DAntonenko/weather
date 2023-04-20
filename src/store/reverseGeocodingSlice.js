@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { openweathermapApiKey } from '../constants';
 
 export const fetchReverseGeocodingData = createAsyncThunk(
   'reverseGeocodingData/fetchReverseGeocodingData',
   async function({ latitude, longitude }, {rejectWithValue}) {
     try {
       const response =
-        await fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=5&appid=${openweathermapApiKey}&units=metric`);
+        await await fetch(`http://0.0.0.0:8000/reverse-geocoding?lat=${latitude}&lon=${longitude}`);
 
       if(!response.ok) {
         throw new Error('Server Error');
