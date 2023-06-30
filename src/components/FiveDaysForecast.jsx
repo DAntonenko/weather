@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import WeatherForDay from './WeatherForDay';
 import PropTypes  from 'prop-types';
 

@@ -5,7 +5,7 @@ export const fetchDirectGeocodingData = createAsyncThunk(
   async function(place, {rejectWithValue}) {
     try {
       const response =
-        await await fetch(`http://0.0.0.0:8000/direct-geocoding?q=${place.city}`);
+        await fetch(`http://0.0.0.0:8000/direct-geocoding?q=${place.city}`);
 
       if(!response.ok) {
         throw new Error('Server Error');

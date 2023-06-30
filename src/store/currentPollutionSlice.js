@@ -5,7 +5,7 @@ export const fetchCurrentPollutionData = createAsyncThunk(
   async function({ lat, lon }, {rejectWithValue}) {
     try {
       const response =
-        await await fetch(`http://0.0.0.0:8000/current-pollution-coords?lat=${lat}&lon=${lon}`);
+        await fetch(`http://0.0.0.0:8000/current-pollution-coords?lat=${lat}&lon=${lon}`);
 
       if(!response.ok) {
         throw new Error('Server Error');

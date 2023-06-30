@@ -5,7 +5,7 @@ export const fetchReverseGeocodingData = createAsyncThunk(
   async function({ latitude, longitude }, {rejectWithValue}) {
     try {
       const response =
-        await await fetch(`http://0.0.0.0:8000/reverse-geocoding?lat=${latitude}&lon=${longitude}`);
+        await fetch(`http://0.0.0.0:8000/reverse-geocoding?lat=${latitude}&lon=${longitude}`);
 
       if(!response.ok) {
         throw new Error('Server Error');
